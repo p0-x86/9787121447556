@@ -1,0 +1,35 @@
+     1                                  
+     2 00000000 B800B8                  mov ax,0xb800
+     3 00000003 8EC0                    mov es,ax
+     4                                  
+     5 00000005 26C606000048            mov byte [es:0x00], 'H'
+     6 0000000B 26C606020069            mov byte [es:0x02], 'i'
+     7 00000011 26C606040021            mov byte [es:0x04], '!'
+     8                                  
+     9                                  
+    10                                  ; 获取标号
+    11 00000017 B8[3C00]                mov ax, number
+    12 0000001A BB0A00                  mov bx, 10
+    13                                  
+    14                                  ; 统一数据段/代码段
+    15 0000001D 8CC9                    mov cx, cs
+    16 0000001F 8ED9                    mov ds, cx
+    17                                  
+    18                                  ; 获取单个数字
+    19 00000021 BA0000                  mov dx, 0
+    20 00000024 F7F3                    div bx
+    21 00000026 8816[3C7C]              mov [0x7c00+number+0x00], dl
+    22                                  
+    23                                  ; 转换为ASCII代码，并继续显示
+    24 0000002A A0[3C7C]                mov al, [0x7c00+number+0x00]
+    25 0000002D 0430                    add al, 0x30
+    26 0000002F 26A20600                mov [es:0x06], al
+    27 00000033 26C606080044            mov byte [es:0x08], 'D'
+    28                                  
+    29                                  
+    30                                  
+    31 00000039 E9FDFF                  infi: jmp near infi
+    32                                  
+    33 0000003C 0000000000              number db 0, 0, 0, 0, 0
+    34 00000041 00<rep 1BDh>            times 445 db 0
+    35 000001FE 55AA                    db 0x55,0xaa
