@@ -1,0 +1,56 @@
+     1                                  
+     2                                  
+     3 00000000 E91F00                      jmp near start
+     4 00000003 4C076107620765076C-     mytext db 'L',0x07,'a',0x07,'b',0x07,'e',0x07,'l',0x07,' ',0x07,'o',0x07,          'f',0x07,'f',0x07,'s',0x07,'e',0x07,'t',0x07,':',0x07
+     4 0000000C 0720076F0766076607-
+     4 00000015 7307650774073A07   
+     6 0000001D 0000000000              number db 0,0,0,0,0
+     7                                  
+     8                                    start:
+     9 00000022 B8C007                      mov ax, 0x7c0
+    10 00000025 8ED8                        mov ds, ax
+    11                                  
+    12 00000027 B800B8                      mov ax, 0xb800
+    13 0000002A 8EC0                        mov es, ax
+    14                                  
+    15 0000002C FC                          cld
+    16                                  
+    17                                      ; DS:SI -> ES:DI
+    18 0000002D BE[0300]                    mov si, mytext
+    19 00000030 BF0000                      mov di, 0
+    20 00000033 B90D00                      mov cx, (number-mytext)/2
+    21 00000036 F3A5                        rep movsw
+    22                                  
+    23                                      ; 拆解数字
+    24 00000038 B8[1D00]                    mov ax, number  ; 获取标号地址
+    25                                  
+    26 0000003B 89C3                        mov bx, ax    ; 用于访问内存数据(写入后递增)
+    27 0000003D B90500                      mov cx, 5     ; 循环次数
+    28 00000040 BE0A00                      mov si, 10    ; 除数
+    29                                    digit:
+    30 00000043 31D2                        xor dx, dx
+    31 00000045 F7F6                        div si
+    32 00000047 8817                        mov [bx], dl
+    33 00000049 43                          inc bx
+    34 0000004A E2F7                        loop digit
+    35                                  
+    36                                      ; 显示数字
+    37 0000004C BB[1D00]                    mov bx, number
+    38 0000004F BE0400                      mov si, 4
+    39                                  
+    40                                    show:
+    41 00000052 8A00                        mov al, [bx+si]   ; 获取最后一位数字
+    42 00000054 0430                        add al, 0x30      ; 转化为ASCII编码
+    43 00000056 B404                        mov ah, 0x04      ; 设置显示字符属性
+    44 00000058 268905                      mov [es:di], ax   ; 送入内存
+    45 0000005B 83C702                      add di, 2
+    46 0000005E 4E                          dec si
+    47 0000005F 79F1                        jns show
+    48                                  
+    49 00000061 26C7054407                  mov word [es:di], 0x744
+    50                                  
+    51 00000066 E9FDFF                      jmp near $
+    52                                  
+    53 00000069 00<rep 195h>              times 510-($-$$) db 0
+    54 000001FE 55AA                                       db 0x55,0xaa
+    55                                  
