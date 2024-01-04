@@ -1,0 +1,28 @@
+     1 00000000 E90E00                        jmp near start
+     2 00000003 312B322B332B2E2E2E-       message db '1+2+3+...+100='
+     2 0000000C 2B3130303D         
+     3                                    start:
+     4 00000011 B8C007                      mov ax, 0x7c0
+     5 00000014 8ED8                        mov ds, ax
+     6                                  
+     7 00000016 B800B8                      mov ax, 0xb800
+     8 00000019 8EC0                        mov es, ax
+     9                                  
+    10 0000001B BE[0300]                    mov si, message
+    11 0000001E BF0000                      mov di, 0
+    12 00000021 B90E00                      mov cx, start-message
+    13                                    @g:
+    14 00000024 8A04                          mov al, [si]
+    15 00000026 268805                        mov [es:di], al
+    16 00000029 47                            inc di
+    17 0000002A 26C60507                      mov byte [es:di], 0x07
+    18 0000002E 47                            inc di
+    19 0000002F 46                            inc si
+    20 00000030 E2F2                        loop @g
+    21                                  
+    22                                  
+    23 00000032 E9FDFF                          jmp near $ 
+    24                                         
+    25                                  
+    26 00000035 00<rep 1C9h>            times 510-($-$$) db 0
+    27 000001FE 55AA                                     db 0x55,0xaa
