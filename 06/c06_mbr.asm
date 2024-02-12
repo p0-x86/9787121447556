@@ -1,3 +1,5 @@
+mov ax, 3
+int 0x10
 
 mov ax,0xb800
 mov es,ax
@@ -31,5 +33,5 @@ mov byte [es:0x08], 'D'
 infi: jmp near infi
 
 number db 0, 0, 0, 0, 0
-times 445 db 0
+times 440 db 0
 db 0x55,0xaa
