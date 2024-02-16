@@ -1,10 +1,13 @@
 SECTION header vstart=0
-    program_length  dd program_end    ; 大小 [0x00]
 
-    code_entry    dw start            ; 偏移地址 [0x04]
-                  dd section.code_1.start ; 段地址 [0x06]
+    ; 用户程序的尺寸
+    program_length  dd program_end                                  ; 大小 [0x00]
 
-    realloc_tbl_len dw (header_end - code_1_segment) / 4        ;[0x0a]
+    ; 应用程序的入口点
+    code_entry    dw start                                          ; 偏移地址 [0x04]
+                  dd section.code_1.start                           ; 段地址 [0x06]
+
+    realloc_tbl_len dw (header_end - code_1_segment) / 4            ; 段重定位的项目数 [0x0a]
 
     code_1_segment  dd section.code_1.start ;[0x0c]
     code_2_segment  dd section.code_2.start ;[0x10]

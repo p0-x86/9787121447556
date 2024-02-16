@@ -1,26 +1,65 @@
 
 
+    ; 用户程序位于硬盘上的什么位置，它的起始逻辑扇区号是多少
     app_lba_start equ 100
 
 SECTION mbr align=16 vstart=0x7c00
 
-  ; 初始化段
+  ; 初始化栈
   mov ax,0      
   mov ss,ax
   mov sp,ax
 
-  ; 转换为逻辑地址
-  mov ax,[cs:phy_base]
-  mov dx,[cs:phy_base+0x02]
+  ; 将物理地址变成16位的段地址
+  mov ax,[cs:phy_base]              ; 0000
+  mov dx,[cs:phy_base+0x02]         ; 0010
   mov bx,16
   div bx
-  mov ds,ax
+  mov ds,ax                         ; 0x1000
   mov es,ax
 
 
+  ; 读取用户程序最开始的512字节
+  xor di,di
+  mov si,app_lba_start
+  xor bx,bx
+  call read_hard_disk_0
+
+  ; 第6章 除法计算
+  ; 32位除以16位: `DX(高16位):AX(低16位)/被除数`、`[R|M]16(除数)`、`AX(商)`、`DX(余数)`
+  mov dx,[2]
+  mov ax,[0]
+  mov bx,512
+  div bx              ; 判断用户程序占用多少个扇区
+
+  cmp dx,0            
+  jnz @1              ; 判断是否除尽。
+                      ; 如果没有除尽，则转移到后面的代码，去读取剩余代码
+
+
+  dec ax              ; 如果除尽了，则总扇区数减1（已经预读了一个扇区）
+@1:
+  ; 小于512字节，或者恰好等于512字节
+  cmp ax, 0           ;
+  jz direct           ; 用户程序已经读完
+
+  ; 每次往内存中加载一个扇区前，都重新在前面的数据尾部构造一个新的逻辑段
+  push ds
+  mov cx,ax
+@2:
+  mov ax,ds
+  add ax,0x20
+  mov ds,ax
+  xor bx,bx
+  inc si                ; 切换到下一个逻辑扇区
+  call read_hard_disk_0
+  loop @2
+
+  pop ds
+  ; 用户程序读取完毕
+
+
 ; 读取硬盘
-; LBA: DI:SI
-: DS:BX
 read_hard_disk_0:             ;读取硬盘
                               ; DI:SI LBA地址
                               ; DS:BX 加载内存地址
@@ -54,6 +93,8 @@ read_hard_disk_0:             ;读取硬盘
     mov al, 0x20
     out dx, al
 
+    ; 反复从硬盘接口哪里取得512字节的数据
+
     pop dx
     pop cx
     pop bx
@@ -63,6 +104,7 @@ read_hard_disk_0:             ;读取硬盘
 
 
 
+  ; 加载用户程序需要确定一个内存物理地址
   phy_base dd 0x10000
 
   times 510-($-$$) db 0
