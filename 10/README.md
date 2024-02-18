@@ -1,3 +1,38 @@
+### [131 启用更新周期结束中断](https://study.163.com/course/courseLearn.htm?courseId=1209670804#/learn/video?lessonId=1280833423&courseId=1209670804)
+
+<img src="./01.png" />
+
+
+# 第 10 章 中断和动态时钟显示
+
+## 10.1 外部硬件中断
+
+### 10.1.2 可屏蔽中断
+
+* 中断屏蔽寄存器(Interrupt Mask Register, IMR), 这是8位寄存器，对应着该芯片的8个中断输入引脚，0表示允许，1表示阻断
+* 8259 芯片是可编程的，主片的端口是 `0x20` 和 `0x21`，从片的端口是 `0xa0 和0xa1`
+* **中断标志(Interrupt Flag)** `0 - 忽略 - cli` / `1 - 接受 - sti`
+
+###  10.1.3 实模式下的中断向量表
+
+* 中断向量表（Interrupt Vector Table， IVT）: `0x00000` ~ `0x003ff`
+* 每个中断在中断向量表中占 2 个字，分别是中断处理程序的偏移地址和段地址
+
+**1 - 保护断点的现场**
+
+* 标志寄存器 FLAGS 压栈, 然后清楚它的IF位和TF位
+* 再将 CS 和 IP 压栈
+
+**2 - 执行中断程序**
+
+* 中断号乘4获取中断向量表偏移地址
+* 从向量表中获取偏移地址和段地址, 并分别传送到IP和CS中
+
+**3 - 返回断点接着执行**
+
+* 最后一条指令必须是中断返回指令 iret(弹出: IP、CS、FLAGS)
+
+
 ## 9.2 内部中断
 
 ### 9.3.1 BIOS 中断
@@ -9,9 +44,7 @@
 
 * [操作系统真象还原 学习笔记08--中断](https://www.kn0sky.com/?p=47)
 
-### [131 启用更新周期结束中断](https://study.163.com/course/courseLearn.htm?courseId=1209670804#/learn/video?lessonId=1280833423&courseId=1209670804)
 
-<img src="./01.png" />
 
 ### [14 外中断和时钟](https://www.bilibili.com/video/BV1b44y1k7mT?p=14)
 
