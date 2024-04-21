@@ -1,0 +1,9 @@
+     1                                  [bits 16]
+     2 00000000 89D1                    mov cx, dx
+     3 00000002 6689D8                  mov eax, ebx
+     4 00000005 B800B8                  mov ax, 0xb800
+     5                                  
+     6                                  [bits 32]
+     7 00000008 6689D1                  mov cx, dx
+     8 0000000B 89D8                    mov eax, ebx
+     9 0000000D 66B800B8                mov ax, 0xb800
