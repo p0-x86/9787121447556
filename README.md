@@ -13,15 +13,11 @@
 * [第 5 章 虚拟机的安装和使用](./05/)
 * [第 4 章 汇编语言和汇编软件](./04/)
 * [第 3 章 分段机制和逻辑地址](./03/)
-* [第 2 章 计算机和汇编语言](./02/)
-* [第 1 章 十六进制计数法](./01/)
+* ~~[第 2 章 计算机和汇编语言](./02/)~~
+* ~~[第 1 章 十六进制计数法](./01/)~~
 
 
 ## Ref
 
 * <https://item.jd.com/10068400956148.html>
 * <http://lizhongc.com/>
-
-**Intel手册**
-
-* <https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html>
