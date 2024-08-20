@@ -21,3 +21,7 @@
 
 * <https://item.jd.com/10068400956148.html>
 * <http://lizhongc.com/>
+
+**Intel手册**
+
+* <https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html>

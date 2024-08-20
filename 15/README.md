@@ -17,6 +17,25 @@
 	* 我们拥有一个指向全部4G内存空间的描述符
 	* 内核被加载的物理地址是由EDI寄存器指向的
 
+```
+mov eax,0x0008                     ;加载数据段(0..4GB)选择子
+         mov ds,eax
+
+mov esi,[0x7c00+pgdt+0x02]         ;不可以在代码段内寻址pgdt，但可以
+                                            ;通过4GB的段来访问
+
+  ;建立公用例程段描述符
+         mov eax,[edi+0x04]                 ;公用例程代码段起始汇编地址
+         mov ebx,[edi+0x08]                 ;核心数据段汇编地址
+         sub ebx,eax
+         dec ebx                            ;公用例程段界限 
+         add eax,edi                        ;公用例程段基地址
+         mov ecx,0x00409800                 ;字节粒度的代码段描述符
+         call make_gdt_descriptor
+         mov [esi+0x28],eax
+         mov [esi+0x2c],edx
+```
+
 ---
 
 <img src="./01.png" />
